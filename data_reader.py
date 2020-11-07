@@ -56,7 +56,7 @@ def amazon_dataset_iters(
         init_token="$start",
         eos_token="$end",
         lower=True,
-        dtype=torch.FloatTensor,
+        dtype=torch.float,
         postprocessing=__review_postprocessing)
     tips = data.Field(
         sequential=True,
@@ -65,7 +65,7 @@ def amazon_dataset_iters(
         eos_token="$end",
         fix_length=MAX_LENGTH + 2,
         lower=True)
-    rating = data.Field(sequential=False, use_vocab=False, dtype=torch.FloatTensor)
+    rating = data.Field(sequential=False, use_vocab=False, dtype=torch.float)
     if verbose:
         print('Loading datasets...')
     train, val, test = data.TabularDataset.splits(
