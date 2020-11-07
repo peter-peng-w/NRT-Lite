@@ -5,7 +5,7 @@ from torchtext import data
 from constants import MAX_LENGTH, MIN_FREQ
 
 
-def __review_postprocessing(review, vocab, _):
+def __review_postprocessing(review, vocab):
     def freqs_sent(sentence):
         length = np.where(sentence == eos_ind)[0][0] + 1
         freqs = np.bincount(sentence, minlength=len(vocab.itos)) / length
