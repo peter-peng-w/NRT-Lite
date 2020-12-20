@@ -6,7 +6,7 @@ from .rater import Rater
 from .textgen import TextRNN
 from .mlp import MLP
 
-from ..utils import AttrDict
+from .attr_dict import AttrDict
 
 
 class NRT(nn.Module):
@@ -64,7 +64,7 @@ class NRT(nn.Module):
 
     def get_input(self, data):
         # construct the input hidden vector of the TextRNN
-        user_var, item_var = data.users, data.items
+        user_var, item_var = data.user, data.item
         # concat user embedding and item embedding
         user_vct = self.user_ebd(user_var)
         item_vct = self.item_ebd(item_var)
@@ -76,7 +76,7 @@ class NRT(nn.Module):
         rating_idx = ratings.round().long()
         rating_idx[rating_idx < 1] = 1
         rating_idx[rating_idx > 5] = 5
-        # rating_idx[rating_idx > 0] -= 1
+        rating_idx[rating_idx > 0] -= 1
         rating_idx = rating_idx.unsqueeze(-1)
         rating_vct = torch.zeros([batch_size, 5], device=ratings.device).scatter_(1, rating_idx, 1.)
         # review words prediction representation
@@ -100,7 +100,7 @@ class NRT(nn.Module):
             rate_output = input_dict.ratings
 
         if mode == 'review' or mode == 'all':
-            review_output = self.textgen(input_dict, word_var, data=data, tf_rate=1)
+            review_output = self.textgen(input_dict, word_var, data=data, tf_rate=tf_rate)
 
         if mode == 'worddict' or mode == 'all':
             wd_output = self.wd(input_dict.wd_vct).log_softmax(-1)

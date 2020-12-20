@@ -1,7 +1,7 @@
 from os import makedirs
 from os.path import splitext, join
 
-from constants import TEST_SPLIT, TRAIN_SPLIT
+from .constants import TEST_SPLIT, TRAIN_SPLIT
 
 
 def split(json_paths, verbose=True):

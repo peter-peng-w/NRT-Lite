@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from torchtext import data
 
-from constants import MAX_LENGTH, MIN_FREQ
+from .constants import MAX_LENGTH, MIN_FREQ
 
 
 def __review_postprocessing(review, vocab):
@@ -23,7 +23,7 @@ def __review_postprocessing(review, vocab):
 
 
 def amazon_dataset_iters(
-        parent_path, batch_sizes=(32, 256, 256),
+        parent_path, batch_sizes=(32, 64, 64),
         minimum_frequency=MIN_FREQ,
         verbose=True):
     """Helper function for creating batch iterators over Amazon Reviews datasets.

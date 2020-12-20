@@ -6,7 +6,7 @@ from torch import nn
 
 from .rnn import RNN, RNNStateAdaptor
 from .attn import Attn
-from ..utils import AttrDict
+from .attr_dict import AttrDict
 
 
 class ReviewHiRNN(nn.Module):
@@ -154,31 +154,40 @@ class TextRNN(nn.Module):
 
     def forward(self, input_dict, input_seq, data=None, tf_rate=1):
         init_hidden = self.get_init_hidden(input_dict.ui_t_var)
-
+        # print('input sequence shape:{}'.format(input_seq.shape))
+        # print('init_hidden shape:{}'.format(init_hidden.shape))
         # teacher forcing applies to entire sequence
         teacher_forcing = random.random() < tf_rate
 
         if teacher_forcing:
             # Teacher forcing: feed the entire sequence of batch ground truth
+            # print('In teacher forcing')
             return self.decode(input_seq, init_hidden, data, input_dict)
         else:
             # No teacher forcing: Forward batch of sequences through decoder one time step at a time
+            # print('No teacher forcing')
             hidden = init_hidden
             outputs = []
             max_length = input_seq.size(0)
-
+            # print('max_length:{}'.format(max_length))
             decoder_var = input_seq[0].view(1, -1)
-
+            # print('decoder_var:{}'.format(decoder_var))
             for _ in range(max_length):
-                output_step, hidden = self.decode(decoder_var, hidden, data)
-
+                decode_result = self.decode(decoder_var, hidden, data)
+                output_step = decode_result.output
+                hidden = decode_result.hidden
+                # print('output_step: {}'.format(output_step))
+                # print('output_step shape: {}'.format(output_step.shape))
                 outputs.append(output_step)
 
                 # next input is decoder's own current output
                 _, decoder_var = output_step.max(2)
+                # print('decoder_var:{}'.format(decoder_var))
+                # print('decoder_var shape:{}'.format(decoder_var.shape))
 
             output_var = torch.cat(outputs, 0)
-
+            # print('output_var: {}'.format(output_var))
+            # print('output_var.shape: {}'.format(output_var.shape))
             # TODO: handle no tf response with AttrDict
             return output_var
 
