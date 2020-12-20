@@ -32,10 +32,10 @@ def test_review_bleu(gts_data, generate_data, vocab, bleu_totals, length):
     gene_sentence = []
     # detokenize the sentence
     for token_ids in gts_idx:
-        current = [vocab.itos[id] for id in token_ids.detach().numpy()]
+        current = [vocab.itos[id] for id in token_ids.detach().cpu().numpy()]
         gts_sentence.append(current)
     for token_ids in generate_idx:
-        current = [vocab.itos[id] for id in token_ids.detach().numpy()]
+        current = [vocab.itos[id] for id in token_ids.detach().cpu().numpy()]
         gene_sentence.append(current)
     # compute bleu score
     assert len(gts_sentence) == len(gene_sentence)
