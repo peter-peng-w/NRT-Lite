@@ -100,9 +100,14 @@ class NRT(nn.Module):
             rate_output = input_dict.ratings
 
         if mode == 'review' or mode == 'all':
+            # print('Before feeding into text generator')
+            # print('Hidden state: {}'.format(input_dict.ui_t_var))
             review_output = self.textgen(input_dict, word_var, data=data, tf_rate=tf_rate)
 
         if mode == 'worddict' or mode == 'all':
+            # print('Before feeding into the linear layer of review generator')
+            # print('Word vector: {}'.format(input_dict.wd_vct))
+            # print('Word vector shape:{}'.format(input_dict.wd_vct.shape))
             wd_output = self.wd(input_dict.wd_vct).log_softmax(-1)
 
         if mode == 'rate':
